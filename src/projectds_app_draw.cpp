@@ -28,7 +28,20 @@ static void show_data_selection_dialog(ProjectDS& self) {
                 self.archive_manager.load_archive(file.path().string());
             }
         }
+        if (compressor_file.empty()) {
+          // try above dir
 
+          folder = folder + "\\..";
+          for (auto file : std::filesystem::directory_iterator(folder)) {
+              auto filename = file.path().filename();
+
+              if (filename.extension() == ".dll" && filename.string().find("oo2core") == 0 && compressor_file.empty()) {
+                  compressor_file = file.path().string();
+              }
+          }
+
+
+        }
         if (compressor_file.empty()) {
             DECIMA_LOG("Could not find compressor library");
 
@@ -88,7 +101,16 @@ static void show_export_selection_dialog(ProjectDS& self) {
 
     if (!base_folder.empty()) {
         for (const auto selected_file : self.selection_info.selected_files) {
-            const auto filename = sanitize_name(self.archive_manager.hash_to_name.at(selected_file));
+            std::string filename_try;
+            try {
+                filename_try = self.archive_manager.hash_to_name.at(selected_file);
+            } catch (const std::out_of_range& oor) {
+                std::cout << "Out of Range error: " << oor.what() << " for <0x" <<std::hex << selected_file << ">\n";
+                continue;
+            }
+
+            const auto filename = sanitize_name(filename_try);
+
 
             std::filesystem::path full_path = std::filesystem::path(base_folder) / filename;
             std::filesystem::create_directories(full_path.parent_path());
