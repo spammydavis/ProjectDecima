@@ -13,6 +13,8 @@ add_executable(ProjectDS
         src/decima/serializable/object/object_dummy.cpp
         src/decima/serializable/object/collection.cpp
         src/decima/serializable/object/collection_draw.cpp
+        src/decima/serializable/object/mesh.cpp
+        src/decima/serializable/object/mesh_draw.cpp
         src/decima/serializable/object/prefetch.cpp
         src/decima/serializable/object/prefetch_draw.cpp
         src/decima/serializable/object/translation.cpp
